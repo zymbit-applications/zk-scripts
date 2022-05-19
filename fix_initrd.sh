@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 
+# Script to update SCM Alpha initrd.img to make sure salt file matches rootfs salt file.
+# Mis-match caused by updating MAC address in rootfs but not in updateinitramfs process.
+# Updating salt file, adding MAC address and hooks to zk_get_key to make consistent.
+# If salt files differed, once bind locked initrd could not unlock LUKS encryption.
+
 ORIG_IMG="/boot/initrd.img"
 DST_DIR="/tmp/initrd_dir"
 
@@ -65,7 +70,14 @@ EOF
 
 echo "Copy salt file from rootfs to image..."
 salt_file=`find /var/lib/zymbit -name s1_fp_salt.bin`
+echo "md5sum of orig salt file on rootfs: "
+md5sum ${salt_file}
+echo "md5sum of orig salt file in image: "
+md5sum ${DST_DIR}${salt_file}
+
 cp $salt_file ${DST_DIR}${salt_file}
+echo "md5sum of updated salt file in image: "
+md5sum ${DST_DIR}${salt_file}
 
 echo "Repack $ORIG_IMG ..."
 cd $DST_DIR; find . | cpio --quiet -H newc -o | gzip -9 -n > /boot/initrd.img
