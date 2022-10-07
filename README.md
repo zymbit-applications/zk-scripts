@@ -2,7 +2,7 @@
 
 
 ## Description
-This script will help configure the Zymbit module and the host pi to be secure and production ready. This will put the Zymbit module in production mode, set self-destruct policy for tamper detect, and load the essential boot files for verified boot process. This will also sanitize the host device by mounting read-only filesystem, gen random strong passwords using pwgen for all /bin/bash users, disable root account login, disable SSH, andremove remote applications: CURL, WGET, GCC, APT, DPKG.
+This script will help configure the Zymbit module and the host pi to be secure and production ready. This will put the Zymbit module in Production Mode, set self-destruct policy for tamper detect, and load the essential boot files for verified boot process. This will also sanitize the host device by mounting read-only filesystem, gen random strong passwords using pwgen for all /bin/bash users, disable root account login, disable SSH, andremove remote applications: CURL, WGET, GCC, APT, DPKG.
 
 ## Warning
 This script disables/deletes many essential features. Make sure the device is ready for production release before the script is called to lockdown the host.
@@ -14,7 +14,7 @@ The script will simply prompt the user for a (Y/n) for each feature. Destructive
 Example usage:
 ```
 >>>sudo ./host_security_sanitization.py
->>>Load file manifest (Alpha edition) (Y/n): n
+>>>Load file manifest (Beta edition) (Y/n): n
 >>>Set perimeter events to self-destruct (Y/n): n
 >>>Set bind lock? (Warning! permanent) (Y/n): n
 >>>Mount filesystem persistently as read-only on next boot (Y/n): n
