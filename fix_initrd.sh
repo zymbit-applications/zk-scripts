@@ -41,12 +41,12 @@ cat > $DST_DIR/usr/lib/cryptsetup/scripts/zk_get_key << "EOF"
         then
                 eth_mac=$(head -n 1 /etc/zymbit_mac_address)
                 wlan_mac=$(tail -n 1 /etc/zymbit_mac_address)
-                ip link set eth0 down
-                ip link set eth0 address $eth_mac
-                ip link set eth0 up
-                ip link set wlan0 down
-                ip link set wlan0 address $wlan_mac
-                ip link set wlan0 up
+                ip link set eth0 down 1>/dev/null 2>&1
+                ip link set eth0 address $eth_mac 1>/dev/null 2>&1
+                ip link set eth0 up 1>/dev/null 2>&1
+                ip link set wlan0 down 1>/dev/null 2>&1
+                ip link set wlan0 address $wlan_mac 1>/dev/null 2>&1
+                ip link set wlan0 up 1>/dev/null 2>&1
         else
                 break
         fi
@@ -83,7 +83,7 @@ echo "Repack $ORIG_IMG ..."
 cd $DST_DIR; find . | cpio --quiet -H newc -o | gzip -9 -n > /boot/initrd.img
 
 echo "Update $ORIG_IMG in manifest ..."
-python3 -c "import zymkey; zymkey.client.add_or_update_verified_boot_file(0, 'initrd.img')"
+python3 -c "import zymkey; zymkey.client.add_or_update_supervised_boot_file('initrd.img')"
 
 echo "Done."
 
