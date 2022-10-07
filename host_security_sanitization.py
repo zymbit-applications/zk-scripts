@@ -19,7 +19,7 @@
 #This script will help configure the Zymbit module and the host pi
 #to be secure and production ready. This will put the Zymbit module in
 #production mode, set self-destruct policy for tamper detect, and load the
-#essential boot files for verified boot process. This will also sanitize the
+#essential boot files for supervised boot process. This will also sanitize the
 #host device by mounting read-only filesystem, gen random strong passwords using
 #pwgen for all /bin/bash users, disable root account login, disable SSH, and
 #remove remote applications: CURL, WGET, GCC, APT, DPKG.
@@ -53,27 +53,27 @@ def get_user_input_bool(display_str : str):
 def populate_manifest():
     # populate manifest with /boot
     print("Adding /boot files to manifest...")
-    zymkey.client.add_or_update_verified_boot_file(0, "bcm2711-rpi-cm4.dtb")
-    zymkey.client.add_or_update_verified_boot_file(0, "bootcode.bin")
-    zymkey.client.add_or_update_verified_boot_file(0, "cmdline.txt")
-    zymkey.client.add_or_update_verified_boot_file(0, "config.txt")
+    zymkey.client.add_or_update_supervised_boot_file("bcm2711-rpi-cm4.dtb")
+    zymkey.client.add_or_update_supervised_boot_file("cmdline.txt")
+    zymkey.client.add_or_update_supervised_boot_file("config.txt")
     try:
-       zymkey.client.add_or_update_verified_boot_file(0, "initrd.img")
+       zymkey.client.add_or_update_supervised_boot_file("initrd.img")
     except:
        print("Failed to add intird.img. Check if file exists.\n")
-    zymkey.client.add_or_update_verified_boot_file(0, "kernel7l.img")
-    zymkey.client.add_or_update_verified_boot_file(0, "start4.elf")
-    zymkey.client.add_or_update_verified_boot_file(0, "zymbit_mac_address")
-    zymkey.client.add_or_update_verified_boot_file(0, "overlays/vc4-kms-v3d.dtbo")
+    zymkey.client.add_or_update_supervised_boot_file("kernel7l.img")
+    zymkey.client.add_or_update_supervised_boot_file("start4.elf")
+    zymkey.client.add_or_update_supervised_boot_file("zymbit_mac_address")
+    zymkey.client.add_or_update_supervised_boot_file("overlays/vc4-kms-v3d.dtbo")
     print("Done!\n")
 
 def return_manifest():
-    manifest = zymkey.client.get_verified_boot_file_manifest()
+    manifest = zymkey.client.get_supervised_boot_file_manifest()
     print("Manifest returned: %s \n" % manifest)
 
 def set_perimeter_events():
     # Set channels 0/1 to self destruct
     print("Setting perimeter channels to self_destruct...")
+    zymkey.client.clear_perimeter_detect_info()
     zymkey.client.set_perimeter_event_actions(0, True, True)
     zymkey.client.set_perimeter_event_actions(1, True, True)
     print("Done!\n")
@@ -196,7 +196,7 @@ if __name__ == "__main__":
         exit("You need to run this script as sudo")
 
     #Ask user for what features to set/sanitize
-    load_manifest = get_user_input_bool("Load file manifest (Alpha edition)")
+    load_manifest = get_user_input_bool("Load file manifest (Beta edition)")
     set_perimeter_events = get_user_input_bool("Set perimeter events to self-destruct")
     set_bindlock = get_user_input_bool("Set bind lock? (Warning! permanent)")
     read_only_fs = get_user_input_bool("Mount filesystem persistently as read-only on next boot")
